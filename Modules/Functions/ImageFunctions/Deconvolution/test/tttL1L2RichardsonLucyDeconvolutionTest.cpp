@@ -61,17 +61,18 @@ TEST_P(tttL1L2RichardsonLucyDeconvolutionTest,General){
 	std::cerr << "Running for input" << inputFileName << std::endl;
 	m_InputReader->SetFileName(inputFileName);
 	m_KernelReader->SetFileName(kernelFileName);
+	m_InputReader->Update();
+	m_KernelReader->Update();
+	m_InputReader->GetOutput()->SetSpacing(m_KernelReader->GetOutput()->GetSpacing());
 
-	double iterations = std::get<2>(GetParam());
-	double alpha= std::get<3>(GetParam());
-	double beta = std::get<4>(GetParam());
-
+	double alpha= std::get<2>(GetParam());
+	double beta = std::get<3>(GetParam());
+	int iterations = std::get<4>(GetParam());
 	m_Deconvoluter->SetAlpha(alpha);
 	m_Deconvoluter->SetBeta(beta);
 	m_Deconvoluter->NormalizeOn();
 	m_Deconvoluter->SetNumberOfIterations(iterations);
-
-	itk::SimpleFilterWatcher m_Deconvoluter(m_Deconvoluter);
+	itk::SimpleFilterWatcher deconvoluterWatch(m_Deconvoluter);
     m_Writer->SetFileName(std::get<5>(GetParam()));
     try{
     	m_Writer->Update();
@@ -79,12 +80,14 @@ TEST_P(tttL1L2RichardsonLucyDeconvolutionTest,General){
         std::cerr << "Unexpected exception caught when writing deconvolution image: "
                   << e << std::endl;
     }
-    EXPECT_EQ(0,1);
+
+	ASSERT_EQ(this->m_Deconvoluter->GetIteration(),iterations);
+
 };
 
   // Write the deconvolution result
 
-INSTANTIATE_TEST_CASE_P(instantiation,tttL1L2RichardsonLucyDeconvolutionTest,::testing::Values(std::make_tuple("input.mha","blur.mha",0.1,0.1,10,"output.mha"),std::make_tuple("input.mha","blur.mha",0.1,0.1,10,"output.mha"),std::make_tuple("input.mha","blur.mha",0.1,0.1,10,"output.mha")));
+INSTANTIATE_TEST_CASE_P(instantiation,tttL1L2RichardsonLucyDeconvolutionTest,::testing::Values(std::make_tuple("input.mha","psfleg.ome.tif",0.1,0.1,10,"./l1l2.mha"),std::make_tuple("input.mha","psfleg.ome.tif",0,0.1,10,"./l1.mha"),std::make_tuple("input.mha","psfleg.ome.tif",0.1,0,10,"./l2.mha")));
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
