@@ -20,11 +20,11 @@ protected:
 	typedef itk::RescaleIntensityImageFilter<ImageType> Rescaler01FilterType;
 	typedef ttt::L1L2RichardsonLucyDeconvolutionImageFilter< ImageType > DeconvolutionFilterType;
 
-	typename ReaderType::Pointer m_KernelReader;
-	typename ReaderType::Pointer m_InputReader;
-	typename Rescaler01FilterType::Pointer m_Rescaler;
-	typename DeconvolutionFilterType::Pointer m_Deconvoluter;
-	typename WriterType::Pointer m_Writer;
+	ReaderType::Pointer m_KernelReader;
+	ReaderType::Pointer m_InputReader;
+	Rescaler01FilterType::Pointer m_Rescaler;
+	DeconvolutionFilterType::Pointer m_Deconvoluter;
+	WriterType::Pointer m_Writer;
 
 protected:
 	virtual void SetUp() {
