@@ -3,7 +3,7 @@ layout: page
 title: Documentation
 permalink: /documentation/
 ---
-We are updating all the documentation. Meanwhile you can check our [wiki](https://github.com/HatiniLab/ttt/wiki)
+We are updating all the documentation. Meanwhile you can check the [wiki](https://github.com/HatiniLab/ttt/wiki)
 
 #Tutorials
 Coming soon
