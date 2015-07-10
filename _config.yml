@@ -1,7 +1,7 @@
 # Site settings
 title: ttt is a tissue tracker
 email: your-email@domain.com
-url: https://example.github.io
+url: http://hatinilab.github.io/ttt/
 description: "ttt is a tissue tracker is a framework to segment and track epithelial cell from confocal time lapses"
 
 # Color settings (hex-codes without the leading hash-tag)
