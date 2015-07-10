@@ -6,13 +6,13 @@ permalink: /documentation/
 We are updating all the documentation. Meanwhile you can check our [wiki](https://github.com/HatiniLab/ttt/wiki)
 
 #Tutorials
-We are creating a set of sphinx tutorials....
+Coming soon
 
 #API documentation
-Doxygen documentation
+Coming soon
 
 #User manual
-
+Coming soon
 # Papers
 
 Most of the algorithms implemented in ttt have been described in:

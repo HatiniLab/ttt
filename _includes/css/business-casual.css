@@ -5,9 +5,7 @@
  */
 
 body {
-    #font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-family: "Arimo","Helvetica Neue",Helvetica,Arial,sans-serif;
-    #background: url('../img/bg.jpg') no-repeat center center fixed;
     background: url('../img/bg.jpg') no-repeat top center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -45,7 +43,8 @@ hr {
 }
 
 .navbar-brand {
-    text-transform: uppercase;
+    #text-transform: uppercase;
+    font-family: "Lobster",cursive;
     font-weight: 900;
     letter-spacing: 2px;
 }
