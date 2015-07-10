@@ -17,8 +17,8 @@
                 <div class="col-lg-12 text-center">
                   <img class="img-responsive img-border img-full" src="img/slide-1.jpg" alt="">
 
-                    <h2><a href="{{ site.url }}{{ post.url }}">{{title }}</a></h2>
-                    {{ date | date: "%B %e, %Y" }}
+                    <h2><a href="{{ site.url }}{{ post.url }}">{{page.title }}</a></h2>
+                    {{ page.date | date: "%B %e, %Y" }}
                     <div class="entry">
                     {{ content }}
                 </div>
