@@ -13,7 +13,7 @@ Coming soon
 
 #User manual
 Coming soon
-# Papers
+#Papers
 
 Most of the algorithms implemented in ttt have been described in:
 
