@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+
 class tttL1L2RichardsonLucyDeconvolutionTest : public ::testing::TestWithParam< std::tuple< std::string, std::string, double ,double , int , std::string > > {
 protected:
 	typedef float                              PixelType;

@@ -14,9 +14,28 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF() 
 find_package(ITK REQUIRED)
 INCLUDE(${ITK_USE_FILE})
+find_package(VTK COMPONENTS
+  vtkCommonCore
+  vtkFiltersCore
+  vtkInfovisCore
+  vtkInteractionStyle
+
+  #vtkRenderingFreeType${VTK_RENDERING_BACKEND}
+  vtkRenderingVolume${VTK_RENDERING_BACKEND}
+  vtkViewsQt
+  vtkjsoncpp
+  vtkChartsCore
+  vtkRenderingContext${VTK_RENDERING_BACKEND}
+  vtkViewsContext2D
+)
+
+
+include(${VTK_USE_FILE})
 
 enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIR})
 
-add_subdirectory(./Modules/Functions/ImageFunctions/Deconvolution)
+add_subdirectory(./Modules/DataStorage)
+#add_subdirectory(./Modules/Functions/ImageFunctions/Deconvolution)
+#add_subdirectory(./Modules/Functions/ImageFunctions/HessianObjectDetection)
