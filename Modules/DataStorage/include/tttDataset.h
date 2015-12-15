@@ -75,6 +75,10 @@ public:
     	return std::make_shared<Dataset>();
     }
 
+    TimestampResultSet GetFramesAtTimestamp(const TimestampType & timestamp){
+        return m_Frames.get<index_by_timestamp>().equal_range(timestamp);
+    }
+
     LayerResultSet GetLayerSequence(const LayerHandlerType & layer){
         return m_Frames.get<index_by_layer>().equal_range(layer);
     }
@@ -93,6 +97,8 @@ public:
 	}
 
 	unsigned long GetFirstTimestamp(){
+
+
 		return m_FirstTimestamp;
 	}
 
@@ -143,6 +149,13 @@ public:
 			newFrame.SetLayer(layer);
 			m_Frames.insert(newFrame);
 		}
+
+		auto lowest=std::min_element(m_Frames.begin(),m_Frames.end(),[&](const Frame & a, const Frame & b){return a.m_Timestamp < b.m_Timestamp;});
+		auto highest=std::max_element(m_Frames.begin(),m_Frames.end(),[&](const Frame & a, const Frame & b){return a.m_Timestamp < b.m_Timestamp;});
+
+		this->m_FirstTimestamp=lowest->m_Timestamp;
+		this->m_LastTimestamp=highest->m_Timestamp;
+
 		return true;
 	}
 
