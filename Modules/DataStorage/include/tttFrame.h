@@ -8,33 +8,74 @@
 #ifndef MODULES_DATASTORAGE_INCLUDE_TTTFRAME_H_
 #define MODULES_DATASTORAGE_INCLUDE_TTTFRAME_H_
 #include "tttLayer.h"
-#include "tttFrameSource.h"
-#include "tttFrameSink.h"
+
 namespace ttt{
+
 class Frame{
 public:
-	enum FrameType {IMAGE,HESSIANIMAGE,AJGRAPH,CELLGRAPH,REGISTRATION} ;
 
+	/**
+	 * TODO
+	 */
 	typedef Layer::LayerHandlerType LayerHandlerType;
+	/**
+	 * TODO
+	 */
 	typedef unsigned long TimestampType;
+	/**
+	 * TODO
+	 */
+	template<class SourceType> typename SourceType::Pointer GetFrameSource() const {
 
-	template<class T> typename FrameSource<T>::Pointer GetFrameSource(){
-		typename FrameSource<T>::Pointer result = FrameSource<T>::New();
+		typename SourceType::Pointer result = SourceType::New();
+		result->SetFileName(m_FileName);
+		return result;
+
 	}
-	template<class T> typename FrameSink<T>::Pointer GetFrameSink();
+	/**
+	 * TODO
+	 */
+	template<class SinkType> typename SinkType::Pointer GetFrameSink() const{
+		typename SinkType::Pointer result = SinkType::New();
+		result->SetFileName(m_FileName);
+		return result;
+	}
 
+	/**
+	 * TODO
+	 */
 	void SetTimestamp(const TimestampType & timestamp){
 		m_Timestamp=timestamp;
 	}
-	void SetLayer(const LayerHandlerType & layer){
+	/**
+	 * TODO
+	 */
+	void SetLayerHandler(const LayerHandlerType & layer){
 		m_LayerHandler=layer;
 	}
+
+	void SetFileName(const std::string & fileName){
+		m_FileName=fileName;
+	}
+	/**
+	* TODO
+	 */
 	LayerHandlerType m_LayerHandler;
+
+
+	LayerHandlerType GetLayerHandler(){
+		return m_LayerHandler;
+	}
+	/**
+	 * TODO
+	 */
 	TimestampType m_Timestamp;
-	std::string   m_FileName;
+
+	/**
+	 * TODO
+	 */
+	std::string m_FileName;
 };
 }
-
-
 
 #endif /* MODULES_DATASTORAGE_INCLUDE_TTTFRAME_H_ */

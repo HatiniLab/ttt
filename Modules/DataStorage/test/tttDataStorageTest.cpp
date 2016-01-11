@@ -10,11 +10,19 @@
 
 
 TEST(tttAbstractDataRepositoryTest,ReadTest){
-#if 0
-	ttt::Dataset<3>::Pointer repository = ttt::Dataset<3>::New();
 
-	repository->SetDirectory("/home/morgan/testproject2015.04");
-	repository->Open();
+	ttt::Dataset::Pointer repository = ttt::Dataset::New();
+
+	repository->SetPath("/home/morgan/testproject2015.04");
+	repository->Load();
+	auto frame=repository->GetFrame(0,"RawImage");
+	typedef itk::Image<double,3> ImageType;
+	typedef itk::ImageFileReader<ImageType > SourceType;
+	typedef itk::ImageFileWriter<ImageType > SinkType;
+	typename SourceType::Pointer frameSource= frame.GetFrameSource<SourceType>();
+	typename SinkType::Pointer frameSink= frame.GetFrameSink<SinkType>();
+
+#if 0
 
 	auto sequence=repository->GetLayer("RawImage");
 	assert(sequence);

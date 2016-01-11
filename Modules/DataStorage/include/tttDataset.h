@@ -33,6 +33,9 @@ public:
 	typedef std::shared_ptr<Self> Pointer;
 
 
+	typedef itk::Image<float,3> FloatImageType;
+
+
     struct index_by_layer{};
     struct index_by_timestamp{};
     struct index_by_layerandtimestamp{};
@@ -63,6 +66,11 @@ public:
     typedef std::pair<TimestampAndLayerIterator,TimestampAndLayerIterator> TimestampAndLayerResultSet;
 
     FrameContainer m_Frames;
+
+    typedef std::map<Layer::LayerHandlerType,Layer> LayerContainer;
+    LayerContainer m_Layers;
+
+
     std::string m_Path;
     std::string m_ProjectName;
     std::string m_ProjectDescription;
@@ -96,9 +104,18 @@ public:
 
 	}
 
+	Layer GetLayer(const LayerHandlerType & layerHandler){
+		return m_Layers[layerHandler];
+	}
+	void AddLayer(const Layer & layer){
+		m_Layers[layer.GetLayerID()]=layer;
+	}
+
+	void RemoveLayer(){
+
+	}
+
 	unsigned long GetFirstTimestamp(){
-
-
 		return m_FirstTimestamp;
 	}
 
@@ -113,6 +130,7 @@ public:
 	void SetPath(const std::string & path){
 		m_Path=path;
 	}
+
 	bool Load(){
 		Json::Reader reader;
 		Json::Value root;
@@ -134,8 +152,18 @@ public:
 		unsigned totalLayers=root["layers"].size();
 
 
-		for(int layers=0;layers < totalLayers;layers++  ){
+		for(int layer=0;layer < totalLayers;layer++  ){
+			Layer::LayerType type;
+			if(root["layers"][layer]["type"].asString()=="image"){
+				type = Layer::IMAGE;
+			}else if(root["layers"][layer]["type"].asString()=="ajgraph"){
+				type = Layer::AJGRAPH;
+			}
+			Layer::LayerHandlerType layerID = root["layers"][layer]["name"].asString();
+			std::string description =root["layers"][layer]["description"].asString();
+			Layer newLayer(layerID,description,type);
 
+			m_Layers[layerID]=newLayer;
 		}
 
 		unsigned totalFrames=root["frame"].size();
@@ -146,7 +174,15 @@ public:
 
 			Frame newFrame;
 			newFrame.SetTimestamp(timestamp);
-			newFrame.SetLayer(layer);
+			newFrame.SetLayerHandler(layer);
+
+			std::string fileName;
+			std::stringstream fileNameStream;
+			fileNameStream << m_Path << "/" << layer << "_T" << timestamp << ".mha";
+
+			fileNameStream >> fileName;
+
+			newFrame.SetFileName(fileName);
 			m_Frames.insert(newFrame);
 		}
 
