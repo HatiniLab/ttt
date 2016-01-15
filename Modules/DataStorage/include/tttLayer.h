@@ -15,7 +15,7 @@ public:
 	/**
 	 * TODO
 	 */
-	enum LayerType {IMAGE,VECTORIMAGE,TENSORIMAGE,AJGRAPH,CELLGRAPH};
+	enum LayerType {IMAGE,VECTORIMAGE,TENSORIMAGE,AJGRAPH,CELLGRAPH,NULLLAYER};
 
 	LayerHandlerType m_ID;
 	std::string m_Description;
@@ -23,7 +23,7 @@ public:
 
 	Layer(){
 		m_ID="";
-		m_Type=IMAGE;
+		m_Type=NULLLAYER;
 		m_Description="";
 
 	}
@@ -32,13 +32,13 @@ public:
 		m_Description=description;
 		m_Type = type;
 	}
-	LayerHandlerType GetLayerID(){
+	LayerHandlerType GetLayerID() const{
 		return m_ID;
 	}
-	std::string GetLayerDescription(){
+	std::string GetLayerDescription() const{
 		return m_Description;
 	}
-	LayerType GetLayerType(){
+	LayerType GetLayerType() const{
 		return m_Type;
 	}
 };

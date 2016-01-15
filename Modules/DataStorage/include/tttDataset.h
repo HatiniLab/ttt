@@ -24,18 +24,29 @@
 
 
 namespace ttt{
-
+/**
+ * TODO
+ */
 class Dataset{
 
 public:
-
+	/**
+	 * TODO
+	 */
 	typedef Dataset Self;
+	/**
+	 * TODO
+	 */
 	typedef std::shared_ptr<Self> Pointer;
 
-
+	/**
+	 * TODO
+	 */
 	typedef itk::Image<float,3> FloatImageType;
 
-
+	/**
+	 * TODO
+	 */
     struct index_by_layer{};
     struct index_by_timestamp{};
     struct index_by_layerandtimestamp{};
@@ -52,11 +63,15 @@ public:
             >
         > FrameContainer;
 
-
+    /**
+     * TODO
+     */
     typedef typename FrameContainer::template index<index_by_layer>::type LayerIndex;
     typedef typename LayerIndex::iterator LayerIterator;
     typedef std::pair<LayerIterator,LayerIterator> LayerResultSet;
-
+    /**
+     * TODO
+     */
     typedef typename FrameContainer::template index<index_by_timestamp>::type TimestampIndex;
     typedef typename TimestampIndex::iterator TimestampIterator;
     typedef std::pair<TimestampIterator,TimestampIterator> TimestampResultSet;
@@ -64,73 +79,260 @@ public:
     typedef typename FrameContainer::template index<index_by_layerandtimestamp>::type TimestampAndLayerIndex;
     typedef typename TimestampAndLayerIndex::iterator TimestampAndLayerIterator;
     typedef std::pair<TimestampAndLayerIterator,TimestampAndLayerIterator> TimestampAndLayerResultSet;
-
+    /**
+     * TODO
+     */
     FrameContainer m_Frames;
 
+
+
+    /**
+     * TODO
+     */
+    typedef std::vector<Layer::LayerHandlerType> LayerHandlerContainer;
+    typedef LayerHandlerContainer::iterator LayerHandlerIterator;
+    LayerHandlerContainer m_LayerHandlers;
+
+
+    /**
+     * TODO
+     */
     typedef std::map<Layer::LayerHandlerType,Layer> LayerContainer;
+    /**
+     * TODO
+     */
     LayerContainer m_Layers;
 
-
+    /**
+     * TODO
+     */
     std::string m_Path;
+    /**
+     * TODO
+     */
     std::string m_ProjectName;
+    /**
+     * TODO
+     */
     std::string m_ProjectDescription;
-
+    /**
+     * TODO
+     */
     unsigned long m_NumberOfTimestamps;
+    /**
+     * TODO
+     */
     unsigned long m_FirstTimestamp;
+    /**
+     * TODO
+     */
     unsigned long m_LastTimestamp;
-
+    /**
+     * TODO
+     */
     static Dataset::Pointer  New(){
     	return std::make_shared<Dataset>();
     }
-
+    Dataset(){
+    	m_FirstTimestamp=-1;
+    	m_LastTimestamp=0;
+    }
+    /**
+     * TODO
+     */
     TimestampResultSet GetFramesAtTimestamp(const TimestampType & timestamp){
         return m_Frames.get<index_by_timestamp>().equal_range(timestamp);
     }
-
+    /**
+     * TODO
+     */
     LayerResultSet GetLayerSequence(const LayerHandlerType & layer){
         return m_Frames.get<index_by_layer>().equal_range(layer);
     }
-
+    /**
+     * TODO
+     */
 	Frame GetFrame(const TimestampType & timestamp,const LayerHandlerType & layer){
         Frame result = (*m_Frames.get<index_by_layerandtimestamp>().find(boost::make_tuple(layer,timestamp)));
         return result;
 	}
+	/**
+	 * TODO
+	 */
+	Frame NewFrame(const TimestampType & timestamp,const LayerHandlerType & layer){
+		Frame result;
+		if(HasFrame(timestamp,layer)){
+			result = GetFrame(timestamp,layer);
+		}else{
+			Frame newFrame;
+			newFrame.SetTimestamp(timestamp);
+			newFrame.SetLayerHandler(layer);
+			newFrame.SetFileName(this->GetFileName(timestamp,layer));
+			m_Frames.insert(newFrame);
+			result= newFrame;
+			if(timestamp < m_FirstTimestamp){
+				m_FirstTimestamp=timestamp;
+			}
+			if(timestamp > m_LastTimestamp){
+				m_LastTimestamp = timestamp;
+			}
 
+			std::cout << "FIRST: " << this->m_FirstTimestamp << "\t LAST: " << this->m_LastTimestamp << std::endl;
+
+			this->Store();
+		}
+
+
+		return result;
+	}
+	/**
+	 * TODO
+	 */
 	bool HasFrame(const TimestampType & timestamp,const LayerHandlerType & layer){
 		return m_Frames.get<index_by_layerandtimestamp>().find(boost::make_tuple(layer,timestamp))!=m_Frames.end();
 	}
-
+	/**
+	 * TODO
+	 */
 	bool DeleteFrame(const TimestampType & timestamp,const LayerHandlerType & layer){
-
+		//TODO
+		return false;
 	}
-
+	/**
+	 * TODO
+	 */
 	Layer GetLayer(const LayerHandlerType & layerHandler){
 		return m_Layers[layerHandler];
 	}
+	/**
+	 * TODO
+	 */
 	void AddLayer(const Layer & layer){
+		m_LayerHandlers.push_back(layer.GetLayerID());
 		m_Layers[layer.GetLayerID()]=layer;
+		this->Store();
 	}
 
+	LayerHandlerIterator BeginLayerHandlers(){
+		return m_LayerHandlers.begin();
+	}
+	LayerHandlerIterator EndLayerHandlers(){
+		return m_LayerHandlers.end();
+	}
+	/**
+	 * TODO
+	 */
 	void RemoveLayer(){
 
 	}
-
+	/**
+	 * TODO
+	 */
 	unsigned long GetFirstTimestamp(){
 		return m_FirstTimestamp;
 	}
-
+	/**
+	 * TODO
+	 */
 	unsigned long GetLastTimestamp(){
 		return m_LastTimestamp;
 	}
-
+	/**
+	 * TODO
+	 */
 	unsigned long GetNumberOfTimestamps(){
 		return m_NumberOfTimestamps;
 	}
-
+	/**
+	 * TODO
+	 */
 	void SetPath(const std::string & path){
 		m_Path=path;
 	}
+    /**
+	 * Function to set up the name of the project
+	 * @param name an std::string with the name of the project
+	 */
+	inline void SetDatasetName(const std::string & projectName){
+		m_ProjectName=projectName;
+		this->Store();
+	}
+	/**
+	 * Function to obtain the name of the project
+	 * @return an std::string containing the name of the project
+	 */
+	inline std::string GetDatasetName(){
+		return m_ProjectName;
+	}
+	/**
+	 * Function to set up the name of the project
+	 * @param name an std::string with the name of the project
+	 */
+	inline void SetDatasetDescription(const std::string & projectDescription){
+		m_ProjectDescription=projectDescription;
+		this->Store();
+	}
+	/**
+	 * Function to obtain the name of the project
+	 * @return an std::string containing the name of the project
+	 */
+	inline std::string GetDatasetDescription(){
+		return m_ProjectDescription;
+	}
+	/**
+	 * Store the project to disk
+	 */
+	void Store(){
+		std::stringstream fileNameStream;
+		fileNameStream << m_Path << "/" << "dataset.json";
+		std::string projectConfigFile;
+		fileNameStream >> projectConfigFile;
 
+		std::cout << projectConfigFile << std::endl;
+
+		Json::Value root;
+
+		Json::StyledWriter writer;
+
+		root["name"]=this->m_ProjectName;
+		root["description"]=this->m_ProjectDescription;
+
+
+		int k=0;
+		for(auto layerHandlerIt=this->BeginLayerHandlers();layerHandlerIt!=this->EndLayerHandlers();++layerHandlerIt){
+
+			ttt::Layer layer = this->GetLayer(*layerHandlerIt);
+			root["layers"][k]["name"]=*layerHandlerIt;
+
+			root["layers"][k]["description"]=layer.GetLayerDescription();
+
+			if(layer.GetLayerType()==ttt::Layer::IMAGE){
+				root["layers"][k]["type"]=std::string("image");
+			}else if(layer.GetLayerType()==ttt::Layer::AJGRAPH){
+				root["layers"][k]["type"]=std::string("ajgraph");
+			}
+			k++;
+		}
+
+		k=0;
+		for(auto frameIt = m_Frames.begin();frameIt!=m_Frames.end();++frameIt){
+			TimestampType timestamp = frameIt->GetTimestamp();
+			LayerHandlerType layer = frameIt->GetLayerHandler();
+			root["frame"][k]["timestamp"]=(Json::UInt64)timestamp;
+			root["frame"][k]["layer"]=layer;
+			k++;
+		}
+
+		std::string jsoncontent = writer.write(root);
+		std::ofstream file(projectConfigFile.c_str(), std::ofstream::out | std::ofstream::trunc);
+
+		file << jsoncontent;
+
+		file.close();
+	}
+	/**
+	 * Load the project from disk
+	 */
 	bool Load(){
 		Json::Reader reader;
 		Json::Value root;
@@ -163,8 +365,10 @@ public:
 			std::string description =root["layers"][layer]["description"].asString();
 			Layer newLayer(layerID,description,type);
 
+			m_LayerHandlers.push_back(layerID);
 			m_Layers[layerID]=newLayer;
 		}
+
 
 		unsigned totalFrames=root["frame"].size();
 
@@ -195,6 +399,15 @@ public:
 		return true;
 	}
 
+private:
+
+	std::string GetFileName(const TimestampType & timestamp,const LayerHandlerType & layer){
+		std::string fileName;
+		std::stringstream fileNameStream;
+		fileNameStream << m_Path << "/" << layer << "_T" << timestamp << ".mha";
+		fileNameStream >> fileName;
+		return fileName;
+	}
 
 #if 0
 
@@ -258,36 +471,6 @@ public:
         this->StoreFrameInfo(frame);
     }
 
-    /**
-	 * Function to set up the name of the project
-	 * @param name an std::string with the name of the project
-	 */
-	inline void SetProjectName(const std::string & projectName){
-		m_ProjectName=projectName;
-		this->StoreProjectInfo();
-	}
-	/**
-	 * Function to obtain the name of the project
-	 * @return an std::string containing the name of the project
-	 */
-	inline std::string GetDatasetName(){
-		return m_ProjectName;
-	}
-	/**
-	 * Function to set up the name of the project
-	 * @param name an std::string with the name of the project
-	 */
-	inline void SetDatasetDescription(const std::string & projectDescription){
-		m_ProjectDescription=projectDescription;
-		this->StoreProjectInfo();
-	}
-	/**
-	 * Function to obtain the name of the project
-	 * @return an std::string containing the name of the project
-	 */
-	inline std::string GetDatasetDescription(){
-		return m_ProjectDescription;
-	}
 
 	/**
 	 * Function to set the sampling period of the time lapse

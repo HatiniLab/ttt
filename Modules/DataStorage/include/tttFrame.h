@@ -63,8 +63,12 @@ public:
 	LayerHandlerType m_LayerHandler;
 
 
-	LayerHandlerType GetLayerHandler(){
+	LayerHandlerType GetLayerHandler() const{
 		return m_LayerHandler;
+	}
+
+	TimestampType GetTimestamp() const{
+		return m_Timestamp;
 	}
 	/**
 	 * TODO
