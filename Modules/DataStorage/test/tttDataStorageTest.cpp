@@ -10,7 +10,7 @@
 
 
 TEST(tttAbstractDataRepositoryTest,ReadTest){
-
+#if 0
 	ttt::Dataset::Pointer repository = ttt::Dataset::New();
 
 	repository->SetPath("/home/morgan/testproject2015.04");
@@ -32,6 +32,7 @@ TEST(tttAbstractDataRepositoryTest,ReadTest){
 		auto frame = sequence->GetFrame(t);
 		assert(frame);
 	}
+#endif
 #endif
 };
 

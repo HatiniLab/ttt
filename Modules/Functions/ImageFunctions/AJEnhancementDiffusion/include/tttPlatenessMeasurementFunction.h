@@ -25,7 +25,7 @@ namespace ttt
 {
 
 
-template<typename TFloat> class PlatenessMeasurementFunction:public ObjectnessMeasurementFunction<TFloat>
+class PlatenessMeasurementFunction:public ObjectnessMeasurementFunction
 {
 public:
   /** Standard class typedefs. */
@@ -79,28 +79,28 @@ public:
   itkBooleanMacro(ScalePlatenessMeasure);
 
 
-  virtual TFloat ComputeObjectProperty(const FixedArray< TFloat,3> & eigenValue) {
+  virtual double ComputeObjectProperty(const FixedArray< double,3> & eigenValue) {
 		//
 
 		double result = 0;
 		// Find the smallest eigenvalue
-		double smallest = std::fabs(eigenValue[0]);
+		double smallest = vnl_math_abs(eigenValue[0]);
 		double Lambda1 = eigenValue[0];
 		for (unsigned int i = 1; i <= 2; i++) {
-			if (std::fabs(eigenValue[i]) < smallest) {
+			if (vnl_math_abs(eigenValue[i]) < smallest) {
 				Lambda1 = eigenValue[i];
-				smallest = std::fabs(eigenValue[i]);
+				smallest = vnl_math_abs(eigenValue[i]);
 			}
 		}
 
 		// Find the largest eigenvalue
-		double largest = std::fabs(eigenValue[0]);
+		double largest = vnl_math_abs(eigenValue[0]);
 		double Lambda3 = eigenValue[0];
 
 		for (unsigned int i = 1; i <= 2; i++) {
-			if (std::fabs(eigenValue[i] > largest)) {
+			if (vnl_math_abs(eigenValue[i] > largest)) {
 				Lambda3 = eigenValue[i];
-				largest = std::fabs(eigenValue[i]);
+				largest = vnl_math_abs(eigenValue[i]);
 			}
 		}
 
@@ -115,10 +115,10 @@ public:
 		}
 
 
-		if (Lambda3 >= 0.0 || std::fabs(Lambda3) < std::numeric_limits<double>::epsilon()) {
+		if (Lambda3 >= 0.0 || vnl_math_abs(Lambda3) < EPSILON) {
 			return 0;
 		} else {
-			return sqrt(Lambda1*Lambda1 + Lambda2*Lambda2 +Lambda3*Lambda3);
+			return vcl_sqrt(vnl_math_sqr(Lambda1) + vnl_math_sqr(Lambda2) + vnl_math_sqr(Lambda3));
 #if 0
 			double Lambda1Abs = vnl_math_abs(Lambda1);
 			double Lambda2Abs = vnl_math_abs(Lambda2);

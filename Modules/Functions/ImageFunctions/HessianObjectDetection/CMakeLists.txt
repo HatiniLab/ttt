@@ -5,6 +5,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
   
 include_directories(./include/)
 
+add_executable(tttPlatenessMeasurement src/tttPlatenessMeasurement.cpp)
+target_link_libraries(tttPlatenessMeasurement ${ITK_LIBRARIES})
+
 add_executable(tttPlatenessMeasurementFunctionTest test/tttPlatenessMeasurementFunctionTest.cpp)
 
 target_link_libraries(tttPlatenessMeasurementFunctionTest 

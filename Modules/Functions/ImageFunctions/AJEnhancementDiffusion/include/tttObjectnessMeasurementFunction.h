@@ -20,13 +20,12 @@
 #ifndef __itkObjectnessMeasurementFunction_h
 #define __itkObjectnessMeasurementFunction_h
 
-#include "itkObject.h"
-#include "itkObjectFactory.h"
+#include "itkLightObject.h"
 
 namespace ttt
 {
 using namespace itk;
-template<class TFloat> class ObjectnessMeasurementFunction:public Object
+class ObjectnessMeasurementFunction:public LightObject
 {
 public:
   /** Standard class typedefs. */
@@ -38,7 +37,7 @@ public:
   /** Run-time type information (and related methods) */
   itkTypeMacro(ObjectnessMeasurementFunction, LightObject);
 
-  virtual TFloat ComputeObjectProperty(const FixedArray< TFloat,3> & eigenvalues)=0;
+  virtual double ComputeObjectProperty(const FixedArray< double,3> & eigenvalues)=0;
 
 protected:
   ObjectnessMeasurementFunction(){

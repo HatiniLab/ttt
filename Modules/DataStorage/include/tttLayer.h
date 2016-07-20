@@ -9,13 +9,14 @@
 #define MODULES_DATASTORAGE_INCLUDE_TTTLAYER_H_
 
 namespace ttt{
+
 class Layer{
 public:
 	typedef std::string LayerHandlerType;
 	/**
 	 * TODO
 	 */
-	enum LayerType {IMAGE,VECTORIMAGE,TENSORIMAGE,AJGRAPH,CELLGRAPH,NULLLAYER};
+	enum LayerType {INTEGER3DIMAGE,FLOAT3DIMAGE,BINARY3DIMAGE,INTEGER2DIMAGE,FLOAT2DIMAGE,BINARY2DIMAGE,CELLGRAPH,TISSUE,NULLLAYER};
 
 	LayerHandlerType m_ID;
 	std::string m_Description;
@@ -27,7 +28,7 @@ public:
 		m_Description="";
 
 	}
-	Layer(LayerHandlerType & id, std::string & description,LayerType & type){
+	Layer(const LayerHandlerType & id, const std::string & description,const LayerType & type){
 		m_ID=id;
 		m_Description=description;
 		m_Type = type;

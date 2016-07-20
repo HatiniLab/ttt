@@ -8,6 +8,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include_directories(./include/)
 
+
 add_executable(tttL1L2RichardsonLucyDeconvolutionTest test/tttL1L2RichardsonLucyDeconvolutionTest.cpp)
 
 

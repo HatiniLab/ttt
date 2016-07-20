@@ -8,7 +8,7 @@ namespace ttt {
 /**
  * TODO
  */
-template<typename TReal> class VertexnessMeasurementFunction: public ObjectnessMeasurementFunction {
+template<typename TFloat> class VertexnessMeasurementFunction: public ObjectnessMeasurementFunction<TFloat> {
 public:
 
 	/**
@@ -103,79 +103,79 @@ public:
 	 * @param eigenValue
 	 * @return
 	 */
-	virtual double ComputeObjectProperty(
-		const FixedArray<TReal, 3> & eigenValue) {
+	virtual TFloat ComputeObjectProperty(
+			const FixedArray<TFloat, 3> & eigenValue) {
 
-		double result = 0;
-		// Find the smallest eigenvalue
-		double smallest = vnl_math_abs(eigenValue[0]);
-		double Lambda1 = eigenValue[0];
-		for (unsigned int i = 1; i <= 2; i++) {
-			if (std::abs(eigenValue[i]) < smallest) {
-				Lambda1 = eigenValue[i];
-				smallest = vnl_math_abs(eigenValue[i]);
-			}
-		}
+				double result = 0;
+				// Find the smallest eigenvalue
+				double smallest = std::fabs(eigenValue[0]);
+				double Lambda1 = eigenValue[0];
+				for (unsigned int i = 1; i <= 2; i++) {
+					if (std::fabs(eigenValue[i]) < smallest) {
+						Lambda1 = eigenValue[i];
+						smallest = std::fabs(eigenValue[i]);
+					}
+				}
 
-		// Find the largest eigenvalue
-		double largest = vnl_math_abs(eigenValue[0]);
-		double Lambda3 = eigenValue[0];
+				// Find the largest eigenvalue
+				double largest = std::fabs(eigenValue[0]);
+				double Lambda3 = eigenValue[0];
 
-		for (unsigned int i = 1; i <= 2; i++) {
-			if (std::abs(eigenValue[i] > largest)) {
-				Lambda3 = eigenValue[i];
-				largest = vnl_math_abs(eigenValue[i]);
-			}
-		}
+				for (unsigned int i = 1; i <= 2; i++) {
+					if (std::fabs(eigenValue[i] > largest)) {
+						Lambda3 = eigenValue[i];
+						largest = std::fabs(eigenValue[i]);
+					}
+				}
 
-		//  find Lambda2 so that |Lambda1| < |Lambda2| < |Lambda3|
-		double Lambda2 = eigenValue[0];
+				//  find Lambda2 so that |Lambda1| < |Lambda2| < |Lambda3|
+				double Lambda2 = eigenValue[0];
 
-		for (unsigned int i = 0; i <= 2; i++) {
-			if (eigenValue[i] != Lambda1 && eigenValue[i] != Lambda3) {
-				Lambda2 = eigenValue[i];
-				break;
-			}
-		}
+				for (unsigned int i = 0; i <= 2; i++) {
+					if (eigenValue[i] != Lambda1 && eigenValue[i] != Lambda3) {
+						Lambda2 = eigenValue[i];
+						break;
+					}
+				}
 
-		assert(vnl_math_abs(Lambda3) >= vnl_math_abs(Lambda2));
-		assert(vnl_math_abs(Lambda2) >= vnl_math_abs(Lambda1));
-		if (Lambda3 > 0 || Lambda2 > 0 || Lambda1 > 0) {
-			return 0;
-		} else {
+				assert(std::fabs(Lambda3) >= std::fabs(Lambda2));
+				assert(std::fabs(Lambda2) >= std::fabs(Lambda1));
+				if (Lambda3 > 0 || Lambda2 > 0 || Lambda1 > 0) {
+					return 0;
+				} else {
 
-			double S = std::sqrt(
-					Lambda1 * Lambda1 + Lambda2 * Lambda2 * Lambda3 * Lambda3);
-			double A =  Lambda2 / Lambda3;
-			double B = Lambda1 / Lambda2;
-			double C = Lambda1 / Lambda3;
+					double S = std::sqrt(
+							Lambda1 * Lambda1 + Lambda2 * Lambda2 * Lambda3 * Lambda3);
+					double A =  Lambda2 / Lambda3;
+					double B = Lambda1 / Lambda2;
+					double C = Lambda1 / Lambda3;
 
-			double Lambda3Sqr = std::sqrt(Lambda3);
+					double Lambda3Sqr = std::pow(Lambda3,2);
 
-			double GammaSqr = m_Gamma * m_Gamma;
-			double AlphaSqr = m_Alpha * m_Alpha;
-			double BetaSqr = m_Beta * m_Beta;
-			double term1 = 1 - (std::exp(-1.0 * ((std::pow(S,2))) / (2.0 * GammaSqr)));
-			double term2 = 1 - (std::exp(-1.0 * ((std::pow(A,2))) / (2.0 * AlphaSqr)));
-			double term3 = 1 - (std::exp(-1.0 * ((std::pow(B,2))) / (2.0 * BetaSqr)));
+					double GammaSqr = m_Gamma * m_Gamma;
+					double AlphaSqr = m_Alpha * m_Alpha;
+					double BetaSqr = m_Beta * m_Beta;
+					double term1 = 1 - (std::exp(-1.0 * ((std::pow(S,2))) / (2.0 * GammaSqr)));
+					double term2 = 1 - (std::exp(-1.0 * ((std::pow(A,2))) / (2.0 * AlphaSqr)));
+					double term3 = 1 - (std::exp(-1.0 * ((std::pow(B,2))) / (2.0 * BetaSqr)));
 
-			double term4 = std::exp(-1.0 * (2.0 * std::pow(m_C,2)) / (Lambda3Sqr));
-			double term5 = 1 - (std::exp(-1.0 * ((std::pow(C,2))) / (2.0 * BetaSqr)));
+					double term4 = std::exp(-1.0 * (2.0 * std::pow(m_C,2)) / (Lambda3Sqr));
+					double term5 = 1 - (std::exp(-1.0 * ((std::pow(C,2))) / (2.0 * BetaSqr)));
 
-			//			double term1 =  ( 1 - vcl_exp( -1.0 * (S)));
-			//			double term2  = ( 1 - vcl_exp( -1.0 * (A)));
-			//			double term3  = ( 1 - vcl_exp( -1.0 * (B)));
+					//			double term1 =  ( 1 - vcl_exp( -1.0 * (S)));
+					//			double term2  = ( 1 - vcl_exp( -1.0 * (A)));
+					//			double term3  = ( 1 - vcl_exp( -1.0 * (B)));
 
-			double vertexnessMeasure = term1 * term2 * term3 * term4*term5;
+					double vertexnessMeasure = term1 * term2 * term3 * term4*term5;
 
-			if (m_ScaleVertexnessMeasure) {
-				double Lambda3Abs = std::abs(Lambda3);
-				result = Lambda3Abs * vertexnessMeasure;
-			} else {
-				result = vertexnessMeasure;
-			}
-			return (result);
-		}
+					if (m_ScaleVertexnessMeasure) {
+						double Lambda3Abs = std::fabs(Lambda3);
+						result = Lambda3Abs * vertexnessMeasure;
+					} else {
+						result = vertexnessMeasure;
+					}
+					return (result);
+				}
 	}
 
 protected:

@@ -7,39 +7,13 @@
 
 #ifndef MODULES_DATASTORAGE_INCLUDE_TTTFRAME_H_
 #define MODULES_DATASTORAGE_INCLUDE_TTTFRAME_H_
-#include "tttLayer.h"
+
+#include "tttFrameBase.h"
 
 namespace ttt{
 
-class Frame{
+class Frame : public FrameBase{
 public:
-
-	/**
-	 * TODO
-	 */
-	typedef Layer::LayerHandlerType LayerHandlerType;
-	/**
-	 * TODO
-	 */
-	typedef unsigned long TimestampType;
-	/**
-	 * TODO
-	 */
-	template<class SourceType> typename SourceType::Pointer GetFrameSource() const {
-
-		typename SourceType::Pointer result = SourceType::New();
-		result->SetFileName(m_FileName);
-		return result;
-
-	}
-	/**
-	 * TODO
-	 */
-	template<class SinkType> typename SinkType::Pointer GetFrameSink() const{
-		typename SinkType::Pointer result = SinkType::New();
-		result->SetFileName(m_FileName);
-		return result;
-	}
 
 	/**
 	 * TODO
@@ -54,18 +28,6 @@ public:
 		m_LayerHandler=layer;
 	}
 
-	void SetFileName(const std::string & fileName){
-		m_FileName=fileName;
-	}
-	/**
-	* TODO
-	 */
-	LayerHandlerType m_LayerHandler;
-
-
-	LayerHandlerType GetLayerHandler() const{
-		return m_LayerHandler;
-	}
 
 	TimestampType GetTimestamp() const{
 		return m_Timestamp;
@@ -75,10 +37,6 @@ public:
 	 */
 	TimestampType m_Timestamp;
 
-	/**
-	 * TODO
-	 */
-	std::string m_FileName;
 };
 }
 
